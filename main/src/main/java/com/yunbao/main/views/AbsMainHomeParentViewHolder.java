@@ -46,6 +46,7 @@ public abstract class AbsMainHomeParentViewHolder extends AbsMainViewHolder {
     private boolean mPaused;
     protected List<FrameLayout> mViewList;
     private int mAppLayoutOffestY;
+    private CommonNavigatorAdapter commonNavigatorAdapter;
 
     public AbsMainHomeParentViewHolder(Context context, ViewGroup parentView) {
         super(context, parentView);
@@ -115,6 +116,49 @@ public abstract class AbsMainHomeParentViewHolder extends AbsMainViewHolder {
             }
         });
         mIndicator = (MagicIndicator) findViewById(R.id.indicator);
+
+        final List<String> titles = getTitles();
+        CommonNavigator commonNavigator = new CommonNavigator(mContext);
+        commonNavigatorAdapter = new CommonNavigatorAdapter() {
+            @Override
+            public int getCount() {
+                return titles.size();
+            }
+
+            @Override
+            public IPagerTitleView getTitleView(Context context, final int index) {
+                SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
+                simplePagerTitleView.setNormalColor(ContextCompat.getColor(mContext, R.color.gray1));
+                simplePagerTitleView.setSelectedColor(ContextCompat.getColor(mContext, R.color.textColor));
+                simplePagerTitleView.setText(titles.get(index));
+                simplePagerTitleView.setTextSize(18);
+                simplePagerTitleView.getPaint().setFakeBoldText(true);
+                simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mViewPager != null) {
+                            mViewPager.setCurrentItem(index);
+                        }
+                    }
+                });
+                return simplePagerTitleView;
+            }
+
+            @Override
+            public IPagerIndicator getIndicator(Context context) {
+                LinePagerIndicator linePagerIndicator = new LinePagerIndicator(context);
+                linePagerIndicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);
+                linePagerIndicator.setXOffset(DpUtil.dp2px(5));
+                linePagerIndicator.setRoundRadius(DpUtil.dp2px(2));
+                linePagerIndicator.setColors(ContextCompat.getColor(mContext, R.color.global));
+                return linePagerIndicator;
+            }
+        };
+
+        commonNavigator.setAdapter(commonNavigatorAdapter);
+        mIndicator.setNavigator(commonNavigator);
+        ViewPagerHelper.bind(mIndicator, mViewPager);
+
         mRedPoint = (TextView) findViewById(R.id.red_point);
         String unReadCount = ImMessageUtil.getInstance().getAllUnReadMsgCount();
         setUnReadCount(unReadCount);
@@ -202,45 +246,6 @@ public abstract class AbsMainHomeParentViewHolder extends AbsMainViewHolder {
     protected abstract List<String> getTitles();
 
     void setMagicIndicator() {
-        final List<String> titles = getTitles();
-        CommonNavigator commonNavigator = new CommonNavigator(mContext);
-        commonNavigator.setAdapter(new CommonNavigatorAdapter() {
-
-            @Override
-            public int getCount() {
-                return titles.size();
-            }
-
-            @Override
-            public IPagerTitleView getTitleView(Context context, final int index) {
-                SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
-                simplePagerTitleView.setNormalColor(ContextCompat.getColor(mContext, R.color.gray1));
-                simplePagerTitleView.setSelectedColor(ContextCompat.getColor(mContext, R.color.textColor));
-                simplePagerTitleView.setText(titles.get(index));
-                simplePagerTitleView.setTextSize(18);
-                simplePagerTitleView.getPaint().setFakeBoldText(true);
-                simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mViewPager != null) {
-                            mViewPager.setCurrentItem(index);
-                        }
-                    }
-                });
-                return simplePagerTitleView;
-            }
-
-            @Override
-            public IPagerIndicator getIndicator(Context context) {
-                LinePagerIndicator linePagerIndicator = new LinePagerIndicator(context);
-                linePagerIndicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);
-                linePagerIndicator.setXOffset(DpUtil.dp2px(5));
-                linePagerIndicator.setRoundRadius(DpUtil.dp2px(2));
-                linePagerIndicator.setColors(ContextCompat.getColor(mContext, R.color.global));
-                return linePagerIndicator;
-            }
-        });
-        mIndicator.setNavigator(commonNavigator);
-        ViewPagerHelper.bind(mIndicator, mViewPager);
+        commonNavigatorAdapter.notifyDataSetChanged();
     }
 }

@@ -23,7 +23,7 @@ public class MainHomeViewHolder extends AbsMainHomeParentViewHolder {
     private MainHomeLiveViewHolder mLiveViewHolder;
     private MainHomeVideoViewHolder mVideoViewHolder;
     private View[] mIcons;
-    private List<String> mTitleList = new ArrayList();
+    private List<String> mTitleList ;
 
 
     public MainHomeViewHolder(Context context, ViewGroup parentView) {
@@ -37,6 +37,10 @@ public class MainHomeViewHolder extends AbsMainHomeParentViewHolder {
 
     @Override
     public void init() {
+        mTitleList=new ArrayList<>();
+        mTitleList.add(WordUtil.getString(R.string.follow));
+        mTitleList.add(WordUtil.getString(R.string.live));
+        mTitleList.add(WordUtil.getString(R.string.video));
         super.init();
         mIcons = new View[3];
         mIcons[0] = findViewById(R.id.icon_home_top_follow);
@@ -64,9 +68,6 @@ public class MainHomeViewHolder extends AbsMainHomeParentViewHolder {
                     mLiveViewHolder = new MainHomeLiveViewHolder(mContext, parent, new MainHomeLiveViewHolder.HomeTopTagCallback() {
                         @Override
                         public void tagList(List<HomeTopTagBean> list) {
-                            mTitleList.add(WordUtil.getString(R.string.follow));
-                            mTitleList.add(WordUtil.getString(R.string.live));
-                            mTitleList.add(WordUtil.getString(R.string.video));
                             for (int i = 0; i < list.size(); i++) {
                                 mTitleList.add(list.get(i).getCustom_tag_name());
                             }

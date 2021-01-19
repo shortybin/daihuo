@@ -34,6 +34,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../common/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../common/src/main/assets" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../../common/src/main/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../common/build/generated/ap_generated_sources/debug/out" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../common/build/generated/source/buildConfig/debug" isTestSource="false" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../../common/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../../common/build" />
     </content>

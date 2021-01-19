@@ -127,7 +127,10 @@ public class MainHomeLiveViewHolder extends AbsMainHomeChildViewHolder implement
                 mBannerList = JSON.parseArray(obj.getString("slide"), BannerBean.class);
                 List<GroupBannerBean> groupBannerBeanList = JSON.parseArray(obj.getString("group_image"), GroupBannerBean.class);
                 List<HomeTopTagBean> homeTopTagBeanList = JSON.parseArray(obj.getString("custom_tag"), HomeTopTagBean.class);
-                mHomeTopTagCallback.tagList(homeTopTagBeanList);
+                if (mHomeTopTagCallback!=null){
+                    mHomeTopTagCallback.tagList(homeTopTagBeanList);
+                    mHomeTopTagCallback =null;
+                }
                 List<LiveBean> liveBeans = JSON.parseArray(obj.getString("list"), LiveBean.class);
                 for (int i = 0; i < liveBeans.size(); i++) {
                     if (i % 2 == 0) {

@@ -32,6 +32,8 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../baidu">
       <sourceFolder url="file://$MODULE_DIR$/../../../baidu/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../baidu/build/generated/ap_generated_sources/debug/out" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../baidu/build/generated/source/buildConfig/debug" isTestSource="false" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../../baidu/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../../baidu/build" />
     </content>
