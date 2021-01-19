@@ -2,6 +2,7 @@ package com.yunbao.main.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,12 +11,20 @@ import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.youth.banner.Banner;
+import com.youth.banner.listener.OnBannerListener;
+import com.youth.banner.loader.ImageLoader;
+import com.yunbao.common.activity.WebViewActivity;
 import com.yunbao.common.adapter.RefreshAdapter;
 import com.yunbao.common.glide.ImgLoader;
 import com.yunbao.common.utils.DpUtil;
+import com.yunbao.live.bean.GroupBannerBean;
 import com.yunbao.live.bean.LiveBean;
 import com.yunbao.main.R;
+import com.yunbao.main.bean.BannerBean;
 import com.yunbao.main.utils.MainIconUtil;
+
+import java.util.List;
 
 /**
  * Created by cxf on 2018/9/26.
@@ -27,6 +36,8 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
     private static final int HEAD = 0;
     private static final int LEFT = 1;
     private static final int RIGHT = 2;
+    private static final int BANNERLIST = 3;
+
     private View.OnClickListener mOnClickListener;
     private View mHeadView;
 
@@ -51,6 +62,26 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
         };
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof GridLayoutManager) {
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    int viewType = getItemViewType(position);
+                    if (viewType == BANNERLIST || viewType == HEAD) {
+                        return 2;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+        }
+    }
+
     public View getHeadView() {
         return mHeadView;
     }
@@ -59,7 +90,11 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
     public int getItemViewType(int position) {
         if (position == 0) {
             return HEAD;
-        } else if (position % 2 == 0) {
+        } else if (mList.get(position - 1).getViewType() == 0) {
+            return BANNERLIST;
+        } else if (mList.get(position - 1).getViewType() == 1) {
+            return LEFT;
+        } else if (mList.get(position - 1).getViewType() == 2) {
             return RIGHT;
         }
         return LEFT;
@@ -78,6 +113,10 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
             return headVh;
         } else if (viewType == LEFT) {
             return new Vh(mInflater.inflate(R.layout.item_main_home_live_left, parent, false));
+        } else if (viewType == RIGHT) {
+            return new Vh(mInflater.inflate(R.layout.item_main_home_live_right, parent, false));
+        } else if (viewType == BANNERLIST) {
+            return new BannerVh(mInflater.inflate(R.layout.item_main_home_banner_list, parent, false));
         }
         return new Vh(mInflater.inflate(R.layout.item_main_home_live_right, parent, false));
     }
@@ -86,6 +125,8 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder vh, int position) {
         if (vh instanceof Vh) {
             ((Vh) vh).setData(mList.get(position - 1), position - 1);
+        } else if (vh instanceof BannerVh) {
+            ((BannerVh) vh).setData(mList.get(position - 1).getGroupBannerBeanList());
         }
     }
 
@@ -95,9 +136,49 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
     }
 
     class HeadVh extends RecyclerView.ViewHolder {
-
         public HeadVh(View itemView) {
             super(itemView);
+        }
+    }
+
+    class BannerVh extends RecyclerView.ViewHolder {
+        Banner mBanner;
+
+        public BannerVh(View itemView) {
+            super(itemView);
+            mBanner = itemView.findViewById(R.id.banner);
+        }
+
+        void setData(final List<GroupBannerBean> list) {
+            if (list.size() > 0) {
+                mBanner.setVisibility(View.VISIBLE);
+                mBanner.setImageLoader(new ImageLoader() {
+                    @Override
+                    public void displayImage(Context context, Object path, ImageView imageView) {
+                        ImgLoader.display(mContext, ((GroupBannerBean) path).getGroup_image_image(), imageView);
+                    }
+                });
+                mBanner.setOnBannerListener(new OnBannerListener() {
+                    @Override
+                    public void OnBannerClick(int p) {
+                        if (list != null) {
+                            if (p >= 0 && p < list.size()) {
+                                GroupBannerBean bean = list.get(p);
+                                if (bean != null) {
+                                    String link = bean.getGroup_image_external_links();
+                                    if (!TextUtils.isEmpty(link)) {
+                                        WebViewActivity.forward(mContext, link, false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                mBanner.setImages(list);
+                mBanner.start();
+            } else {
+                mBanner.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -119,14 +200,14 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mNum = (TextView) itemView.findViewById(R.id.num);
             mType = (ImageView) itemView.findViewById(R.id.type);
-            mImgGoodsIcon= (ImageView) itemView.findViewById(R.id.img_goods_icon);
+            mImgGoodsIcon = (ImageView) itemView.findViewById(R.id.img_goods_icon);
             itemView.setOnClickListener(mOnClickListener);
         }
 
         void setData(LiveBean bean, int position) {
             itemView.setTag(position);
-            ImgLoader.display(mContext,bean.getThumb(), mCover);
-            ImgLoader.display(mContext,bean.getAvatar(), mAvatar);
+            ImgLoader.display(mContext, bean.getThumb(), mCover);
+            ImgLoader.display(mContext, bean.getAvatar(), mAvatar);
             mName.setText(bean.getUserNiceName());
             if (TextUtils.isEmpty(bean.getTitle())) {
                 if (mTitle.getVisibility() == View.VISIBLE) {
@@ -140,9 +221,9 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
             }
 
 
-            if(bean.getIsshop()==1){
-                ImgLoader.display(mContext,R.mipmap.icon_live_shopping, mImgGoodsIcon);
-            }else{
+            if (bean.getIsshop() == 1) {
+                ImgLoader.display(mContext, R.mipmap.icon_live_shopping, mImgGoodsIcon);
+            } else {
                 mImgGoodsIcon.setImageResource(0);
             }
             mNum.setText(bean.getNums());

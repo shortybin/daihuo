@@ -7,6 +7,9 @@ import android.widget.FrameLayout;
 import com.yunbao.common.utils.WordUtil;
 import com.yunbao.main.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by cxf on 2018/9/22.
  * 附近
@@ -60,10 +63,10 @@ public class MainNearViewHolder extends AbsMainHomeParentViewHolder {
     }
 
     @Override
-    protected String[] getTitles() {
-        return new String[]{
-                WordUtil.getString(R.string.near)
-        };
+    protected List<String> getTitles() {
+        List<String> list = new ArrayList<>();
+        list.add(WordUtil.getString(R.string.near));
+        return list;
     }
 
     @Override

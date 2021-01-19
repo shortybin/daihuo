@@ -30,8 +30,10 @@ import com.yunbao.common.custom.CommonRefreshView;
 import com.yunbao.common.custom.ItemDecoration;
 import com.yunbao.common.glide.ImgLoader;
 import com.yunbao.common.http.HttpCallback;
+import com.yunbao.common.http.JsonBean;
 import com.yunbao.common.interfaces.OnItemClickListener;
 import com.yunbao.common.utils.WordUtil;
+import com.yunbao.live.bean.GroupBannerBean;
 import com.yunbao.live.bean.LiveBean;
 import com.yunbao.live.utils.LiveStorge;
 import com.yunbao.main.R;
@@ -39,6 +41,7 @@ import com.yunbao.main.activity.LiveClassActivity;
 import com.yunbao.main.adapter.MainHomeLiveAdapter;
 import com.yunbao.main.adapter.MainHomeLiveClassAdapter;
 import com.yunbao.main.bean.BannerBean;
+import com.yunbao.main.bean.HomeTopTagBean;
 import com.yunbao.main.http.MainHttpConsts;
 import com.yunbao.main.http.MainHttpUtil;
 
@@ -63,10 +66,16 @@ public class MainHomeLiveViewHolder extends AbsMainHomeChildViewHolder implement
     private Banner mBanner;
     private boolean mBannerShowed;
     private List<BannerBean> mBannerList;
+    private HomeTopTagCallback mHomeTopTagCallback;
 
 
     public MainHomeLiveViewHolder(Context context, ViewGroup parentView) {
         super(context, parentView);
+    }
+
+    public MainHomeLiveViewHolder(Context context, ViewGroup parentView, HomeTopTagCallback callback) {
+        super(context, parentView);
+        mHomeTopTagCallback = callback;
     }
 
     @Override
@@ -94,15 +103,6 @@ public class MainHomeLiveViewHolder extends AbsMainHomeChildViewHolder implement
         mRefreshView = (CommonRefreshView) findViewById(R.id.refreshView);
         mRefreshView.setEmptyLayoutId(R.layout.view_no_data_live);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 2, GridLayoutManager.VERTICAL, false);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (position == 0) {
-                    return 2;
-                }
-                return 1;
-            }
-        });
         mRefreshView.setLayoutManager(gridLayoutManager);
         ItemDecoration decoration = new ItemDecoration(mContext, 0x00000000, 5, 0);
         decoration.setOnlySetItemOffsetsButNoDraw(true);
@@ -125,12 +125,79 @@ public class MainHomeLiveViewHolder extends AbsMainHomeChildViewHolder implement
             public List<LiveBean> processData(String[] info) {
                 JSONObject obj = JSON.parseObject(info[0]);
                 mBannerList = JSON.parseArray(obj.getString("slide"), BannerBean.class);
-                return JSON.parseArray(obj.getString("list"), LiveBean.class);
+                List<GroupBannerBean> groupBannerBeanList = JSON.parseArray(obj.getString("group_image"), GroupBannerBean.class);
+                List<HomeTopTagBean> homeTopTagBeanList = JSON.parseArray(obj.getString("custom_tag"), HomeTopTagBean.class);
+                mHomeTopTagCallback.tagList(homeTopTagBeanList);
+                List<LiveBean> liveBeans = JSON.parseArray(obj.getString("list"), LiveBean.class);
+                for (int i = 0; i < liveBeans.size(); i++) {
+                    if (i % 2 == 0) {
+                        liveBeans.get(i).setViewType(1);
+                    } else {
+                        liveBeans.get(i).setViewType(2);
+                    }
+                }
+
+
+//                List<GroupBannerBean> list1 = new ArrayList<>();
+//                List<GroupBannerBean> list2 = new ArrayList<>();
+//                List<GroupBannerBean> list3 = new ArrayList<>();
+//                List<GroupBannerBean> list4 = new ArrayList<>();
+//
+//                for (int i = 0; i < groupBannerBeanList.size(); i++) {
+//                    if (groupBannerBeanList.get(i).getGroup_image_group_type().equals("1")) {
+//                        list1.add(groupBannerBeanList.get(i));
+//                    } else if (groupBannerBeanList.get(i).getGroup_image_group_type().equals("2")) {
+//                        list2.add(groupBannerBeanList.get(i));
+//                    } else if (groupBannerBeanList.get(i).getGroup_image_group_type().equals("3")) {
+//                        list3.add(groupBannerBeanList.get(i));
+//                    } else if (groupBannerBeanList.get(i).getGroup_image_group_type().equals("4")) {
+//                        list4.add(groupBannerBeanList.get(i));
+//                    }
+//                }
+
+
+                for (int i = 1; i < 5; i++) {
+                    List<GroupBannerBean> list = new ArrayList<>();
+                    for (int j = 0; j < groupBannerBeanList.size(); j++) {
+                        if (groupBannerBeanList.get(j).getGroup_image_group_type().equals(String.valueOf(i))) {
+                            list.add(groupBannerBeanList.get(j));
+                        }
+                    }
+                    if (i == 1) {
+                        LiveBean liveBean = new LiveBean();
+                        liveBean.setViewType(0);
+                        liveBean.setGroupBannerBeanList(list);
+                        liveBeans.add(0, liveBean);
+                    } else if (i == 2) {
+                        LiveBean liveBean = new LiveBean();
+                        liveBean.setViewType(0);
+                        liveBean.setGroupBannerBeanList(list);
+                        if (liveBeans.size() >= 16) {
+                            liveBeans.add(17, liveBean);
+                        }
+                    } else if (i == 3) {
+                        LiveBean liveBean = new LiveBean();
+                        liveBean.setViewType(0);
+                        liveBean.setGroupBannerBeanList(list);
+                        if (liveBeans.size() >= 33) {
+                            liveBeans.add(34, liveBean);
+                        }
+                    } else if (i == 4) {
+                        LiveBean liveBean = new LiveBean();
+                        liveBean.setViewType(0);
+                        liveBean.setGroupBannerBeanList(list);
+                        if (liveBeans.size() >= 50) {
+                            liveBeans.add(51, liveBean);
+                        }
+                    }
+                }
+
+                return liveBeans;
             }
 
             @Override
             public void onRefreshSuccess(List<LiveBean> list, int count) {
-                if(CommonAppConfig.LIVE_ROOM_SCROLL){
+                if (CommonAppConfig.LIVE_ROOM_SCROLL) {
                     LiveStorge.getInstance().put(Constants.LIVE_HOME, list);
                 }
                 showBanner();
@@ -215,7 +282,7 @@ public class MainHomeLiveViewHolder extends AbsMainHomeChildViewHolder implement
         mBanner.setImageLoader(new ImageLoader() {
             @Override
             public void displayImage(Context context, Object path, ImageView imageView) {
-                ImgLoader.display(mContext,((BannerBean) path).getImageUrl(), imageView);
+                ImgLoader.display(mContext, ((BannerBean) path).getImageUrl(), imageView);
             }
         });
         mBanner.setOnBannerListener(new OnBannerListener() {
@@ -324,5 +391,9 @@ public class MainHomeLiveViewHolder extends AbsMainHomeChildViewHolder implement
     public void onDestroy() {
         super.onDestroy();
         release();
+    }
+
+    public interface HomeTopTagCallback {
+        void tagList(List<HomeTopTagBean> list);
     }
 }

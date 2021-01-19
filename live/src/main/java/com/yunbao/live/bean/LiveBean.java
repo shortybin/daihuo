@@ -8,6 +8,9 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.yunbao.common.utils.WordUtil;
 import com.yunbao.live.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by cxf on 2017/8/9.
  */
@@ -32,6 +35,28 @@ public class LiveBean implements Parcelable {
     private int gameAction;//正在进行的游戏的标识
     private String game;
     private int isshop;
+
+    private List<GroupBannerBean> mGroupBannerBeanList;
+    private int mViewType;
+
+    public List<GroupBannerBean> getGroupBannerBeanList() {
+        if (mGroupBannerBeanList == null) {
+            return new ArrayList<>();
+        }
+        return mGroupBannerBeanList;
+    }
+
+    public void setGroupBannerBeanList(List<GroupBannerBean> groupBannerBeanList) {
+        mGroupBannerBeanList = groupBannerBeanList;
+    }
+
+    public int getViewType() {
+        return mViewType;
+    }
+
+    public void setViewType(int viewType) {
+        mViewType = viewType;
+    }
 
     public String getDistance() {
         return distance;
@@ -189,6 +214,7 @@ public class LiveBean implements Parcelable {
     public void setSex(int sex) {
         this.sex = sex;
     }
+
 
     /**
      * 显示靓号
