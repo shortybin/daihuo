@@ -271,7 +271,6 @@ public class CommonRefreshView extends FrameLayout implements View.OnClickListen
         mRecyclerView.addItemDecoration(itemDecoration);
     }
 
-
     public void showLoading() {
         mPageCount = 1;
         if (mSmartRefreshLayout != null) {

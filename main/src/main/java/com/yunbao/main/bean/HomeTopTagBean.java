@@ -1,10 +1,13 @@
 package com.yunbao.main.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by shortybin
  * on 1/19/21
  */
-public class HomeTopTagBean {
+public class HomeTopTagBean implements Serializable {
+
 
     /**
      * custom_tag_external_links : https://image.baidu.com/search/index?tn=baiduimage&ipn=r&ct=201326592&cl=2&lm=-1&st=-1&fm=result&fr=&sf=1&fmq=1610848655337_R&pv=&ic=&nc=1&z=&hd=&latest=&copyright=&se=1&showtab=0&fb=0&width=&height=&face=0&istype=2&ie=utf-8&sid=&word=%E9%A3%8E%E6%99%AF%E5%9B%BE%E7%89%87

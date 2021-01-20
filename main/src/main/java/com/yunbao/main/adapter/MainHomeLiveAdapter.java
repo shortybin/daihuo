@@ -114,11 +114,11 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
         } else if (viewType == LEFT) {
             return new Vh(mInflater.inflate(R.layout.item_main_home_live_left, parent, false));
         } else if (viewType == RIGHT) {
-            return new Vh(mInflater.inflate(R.layout.item_main_home_live_right, parent, false));
+            return new Vh(mInflater.inflate(R.layout.item_main_home_live_left, parent, false));
         } else if (viewType == BANNERLIST) {
             return new BannerVh(mInflater.inflate(R.layout.item_main_home_banner_list, parent, false));
         }
-        return new Vh(mInflater.inflate(R.layout.item_main_home_live_right, parent, false));
+        return new Vh(mInflater.inflate(R.layout.item_main_home_live_left, parent, false));
     }
 
     @Override
@@ -126,7 +126,7 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
         if (vh instanceof Vh) {
             ((Vh) vh).setData(mList.get(position - 1), position - 1);
         } else if (vh instanceof BannerVh) {
-            ((BannerVh) vh).setData(mList.get(position - 1).getGroupBannerBeanList());
+            ((BannerVh) vh).setData(mList.get(position - 1).getGroup());
         }
     }
 

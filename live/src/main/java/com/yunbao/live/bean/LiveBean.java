@@ -36,18 +36,27 @@ public class LiveBean implements Parcelable {
     private String game;
     private int isshop;
 
-    private List<GroupBannerBean> mGroupBannerBeanList;
+    private List<GroupBannerBean> group;
     private int mViewType;
+    private int data_type;
 
-    public List<GroupBannerBean> getGroupBannerBeanList() {
-        if (mGroupBannerBeanList == null) {
+    public List<GroupBannerBean> getGroup() {
+        if (group == null) {
             return new ArrayList<>();
         }
-        return mGroupBannerBeanList;
+        return group;
     }
 
-    public void setGroupBannerBeanList(List<GroupBannerBean> groupBannerBeanList) {
-        mGroupBannerBeanList = groupBannerBeanList;
+    public void setGroup(List<GroupBannerBean> group) {
+        this.group = group;
+    }
+
+    public int getData_type() {
+        return data_type;
+    }
+
+    public void setData_type(int data_type) {
+        this.data_type = data_type;
     }
 
     public int getViewType() {

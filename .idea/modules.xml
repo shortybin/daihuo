@@ -2,17 +2,17 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/daihuo.iml" filepath="$PROJECT_DIR$/.idea/modules/daihuo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/daihuo.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/daihuo.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/baidu/daihuo.baidu.iml" filepath="$PROJECT_DIR$/.idea/modules/baidu/daihuo.baidu.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/beauty/daihuo.beauty.iml" filepath="$PROJECT_DIR$/.idea/modules/beauty/daihuo.beauty.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/daihuo.common.iml" filepath="$PROJECT_DIR$/.idea/modules/common/daihuo.common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game/daihuo.game.iml" filepath="$PROJECT_DIR$/.idea/modules/game/daihuo.game.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/im/daihuo.im.iml" filepath="$PROJECT_DIR$/.idea/modules/im/daihuo.im.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/live/daihuo.live.iml" filepath="$PROJECT_DIR$/.idea/modules/live/daihuo.live.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/main/daihuo.main.iml" filepath="$PROJECT_DIR$/.idea/modules/main/daihuo.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mob/daihuo.mob.iml" filepath="$PROJECT_DIR$/.idea/modules/mob/daihuo.mob.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/video/daihuo.video.iml" filepath="$PROJECT_DIR$/.idea/modules/video/daihuo.video.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/daihuo-android.iml" filepath="$PROJECT_DIR$/.idea/modules/daihuo-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/daihuo-android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/daihuo-android.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/baidu/daihuo-android.baidu.iml" filepath="$PROJECT_DIR$/.idea/modules/baidu/daihuo-android.baidu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/beauty/daihuo-android.beauty.iml" filepath="$PROJECT_DIR$/.idea/modules/beauty/daihuo-android.beauty.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/daihuo-android.common.iml" filepath="$PROJECT_DIR$/.idea/modules/common/daihuo-android.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game/daihuo-android.game.iml" filepath="$PROJECT_DIR$/.idea/modules/game/daihuo-android.game.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/im/daihuo-android.im.iml" filepath="$PROJECT_DIR$/.idea/modules/im/daihuo-android.im.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/live/daihuo-android.live.iml" filepath="$PROJECT_DIR$/.idea/modules/live/daihuo-android.live.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/main/daihuo-android.main.iml" filepath="$PROJECT_DIR$/.idea/modules/main/daihuo-android.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mob/daihuo-android.mob.iml" filepath="$PROJECT_DIR$/.idea/modules/mob/daihuo-android.mob.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/video/daihuo-android.video.iml" filepath="$PROJECT_DIR$/.idea/modules/video/daihuo-android.video.iml" />
     </modules>
   </component>
 </project>

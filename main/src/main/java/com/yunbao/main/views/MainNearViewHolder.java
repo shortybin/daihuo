@@ -1,11 +1,13 @@
 package com.yunbao.main.views;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.yunbao.common.utils.WordUtil;
 import com.yunbao.main.R;
+import com.yunbao.main.interfaces.TopTitleListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,15 @@ public class MainNearViewHolder extends AbsMainHomeParentViewHolder {
         if (vh != null) {
             vh.loadData();
         }
+
+        setTopTitleListener(new TopTitleListener() {
+            @Override
+            public void onTopTitle(int index) {
+                if (mViewPager != null) {
+                    mViewPager.setCurrentItem(index);
+                }
+            }
+        });
     }
 
     @Override

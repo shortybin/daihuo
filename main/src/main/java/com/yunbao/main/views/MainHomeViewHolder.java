@@ -1,13 +1,16 @@
 package com.yunbao.main.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.yunbao.common.utils.WordUtil;
 import com.yunbao.main.R;
+import com.yunbao.main.activity.ImageShowActivity;
 import com.yunbao.main.bean.HomeTopTagBean;
+import com.yunbao.main.interfaces.TopTitleListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +25,8 @@ public class MainHomeViewHolder extends AbsMainHomeParentViewHolder {
     private MainHomeFollowViewHolder mFollowViewHolder;
     private MainHomeLiveViewHolder mLiveViewHolder;
     private MainHomeVideoViewHolder mVideoViewHolder;
-    private View[] mIcons;
-    private List<String> mTitleList ;
+    private List<String> mTitleList;
+    private List<HomeTopTagBean> mHomeTopTagBeans;
 
 
     public MainHomeViewHolder(Context context, ViewGroup parentView) {
@@ -37,16 +40,25 @@ public class MainHomeViewHolder extends AbsMainHomeParentViewHolder {
 
     @Override
     public void init() {
-        mTitleList=new ArrayList<>();
+        mTitleList = new ArrayList<>();
         mTitleList.add(WordUtil.getString(R.string.follow));
         mTitleList.add(WordUtil.getString(R.string.live));
         mTitleList.add(WordUtil.getString(R.string.video));
-        super.init();
-        mIcons = new View[3];
-        mIcons[0] = findViewById(R.id.icon_home_top_follow);
-        mIcons[1] = findViewById(R.id.icon_home_top_live);
-        mIcons[2] = findViewById(R.id.icon_home_top_video);
 
+        mHomeTopTagBeans = new ArrayList<>();
+
+        HomeTopTagBean homeTopTagBean = new HomeTopTagBean();
+        homeTopTagBean.setCustom_tag_name(WordUtil.getString(R.string.follow));
+        mHomeTopTagBeans.add(homeTopTagBean);
+
+        HomeTopTagBean homeTopTagBean1 = new HomeTopTagBean();
+        homeTopTagBean1.setCustom_tag_name(WordUtil.getString(R.string.live));
+        mHomeTopTagBeans.add(homeTopTagBean1);
+
+        HomeTopTagBean homeTopTagBean2 = new HomeTopTagBean();
+        homeTopTagBean2.setCustom_tag_name(WordUtil.getString(R.string.video));
+        mHomeTopTagBeans.add(homeTopTagBean2);
+        super.init();
     }
 
     @Override
@@ -71,9 +83,11 @@ public class MainHomeViewHolder extends AbsMainHomeParentViewHolder {
                             for (int i = 0; i < list.size(); i++) {
                                 mTitleList.add(list.get(i).getCustom_tag_name());
                             }
+                            mHomeTopTagBeans.addAll(list);
                             setMagicIndicator();
                         }
                     });
+
                     vh = mLiveViewHolder;
                 } else if (position == 2) {
                     mVideoViewHolder = new MainHomeVideoViewHolder(mContext, parent);
@@ -90,22 +104,21 @@ public class MainHomeViewHolder extends AbsMainHomeParentViewHolder {
         if (vh != null) {
             vh.loadData();
         }
-        if (mIcons != null) {
-            for (int i = 0, len = mIcons.length; i < len; i++) {
-                View v = mIcons[i];
-                if (v != null) {
-                    if (i == position) {
-                        if (v.getVisibility() != View.VISIBLE) {
-                            v.setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        if (v.getVisibility() == View.VISIBLE) {
-                            v.setVisibility(View.INVISIBLE);
-                        }
+
+        setTopTitleListener(new TopTitleListener() {
+            @Override
+            public void onTopTitle(int index) {
+                if (index > 2) {
+                    Intent intent = new Intent(mContext, ImageShowActivity.class);
+                    intent.putExtra("data", mHomeTopTagBeans.get(index));
+                    mContext.startActivity(intent);
+                } else {
+                    if (mViewPager != null) {
+                        mViewPager.setCurrentItem(index);
                     }
                 }
             }
-        }
+        });
     }
 
     @Override

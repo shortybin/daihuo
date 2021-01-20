@@ -104,9 +104,6 @@ public class MainHomeLiveViewHolder extends AbsMainHomeChildViewHolder implement
         mRefreshView.setEmptyLayoutId(R.layout.view_no_data_live);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 2, GridLayoutManager.VERTICAL, false);
         mRefreshView.setLayoutManager(gridLayoutManager);
-        ItemDecoration decoration = new ItemDecoration(mContext, 0x00000000, 5, 0);
-        decoration.setOnlySetItemOffsetsButNoDraw(true);
-        mRefreshView.setItemDecoration(decoration);
         mAdapter = new MainHomeLiveAdapter(mContext);
         mAdapter.setOnItemClickListener(MainHomeLiveViewHolder.this);
         mRefreshView.setRecyclerViewAdapter(mAdapter);
@@ -125,76 +122,19 @@ public class MainHomeLiveViewHolder extends AbsMainHomeChildViewHolder implement
             public List<LiveBean> processData(String[] info) {
                 JSONObject obj = JSON.parseObject(info[0]);
                 mBannerList = JSON.parseArray(obj.getString("slide"), BannerBean.class);
-                List<GroupBannerBean> groupBannerBeanList = JSON.parseArray(obj.getString("group_image"), GroupBannerBean.class);
                 List<HomeTopTagBean> homeTopTagBeanList = JSON.parseArray(obj.getString("custom_tag"), HomeTopTagBean.class);
-                if (mHomeTopTagCallback!=null){
+                if (mHomeTopTagCallback != null) {
                     mHomeTopTagCallback.tagList(homeTopTagBeanList);
-                    mHomeTopTagCallback =null;
+                    mHomeTopTagCallback = null;
                 }
                 List<LiveBean> liveBeans = JSON.parseArray(obj.getString("list"), LiveBean.class);
                 for (int i = 0; i < liveBeans.size(); i++) {
-                    if (i % 2 == 0) {
+                    if (liveBeans.get(i).getData_type() == 1) {
                         liveBeans.get(i).setViewType(1);
-                    } else {
-                        liveBeans.get(i).setViewType(2);
+                    } else if (liveBeans.get(i).getData_type() == 2) {
+                        liveBeans.get(i).setViewType(0);
                     }
                 }
-
-
-//                List<GroupBannerBean> list1 = new ArrayList<>();
-//                List<GroupBannerBean> list2 = new ArrayList<>();
-//                List<GroupBannerBean> list3 = new ArrayList<>();
-//                List<GroupBannerBean> list4 = new ArrayList<>();
-//
-//                for (int i = 0; i < groupBannerBeanList.size(); i++) {
-//                    if (groupBannerBeanList.get(i).getGroup_image_group_type().equals("1")) {
-//                        list1.add(groupBannerBeanList.get(i));
-//                    } else if (groupBannerBeanList.get(i).getGroup_image_group_type().equals("2")) {
-//                        list2.add(groupBannerBeanList.get(i));
-//                    } else if (groupBannerBeanList.get(i).getGroup_image_group_type().equals("3")) {
-//                        list3.add(groupBannerBeanList.get(i));
-//                    } else if (groupBannerBeanList.get(i).getGroup_image_group_type().equals("4")) {
-//                        list4.add(groupBannerBeanList.get(i));
-//                    }
-//                }
-
-
-                for (int i = 1; i < 5; i++) {
-                    List<GroupBannerBean> list = new ArrayList<>();
-                    for (int j = 0; j < groupBannerBeanList.size(); j++) {
-                        if (groupBannerBeanList.get(j).getGroup_image_group_type().equals(String.valueOf(i))) {
-                            list.add(groupBannerBeanList.get(j));
-                        }
-                    }
-                    if (i == 1) {
-                        LiveBean liveBean = new LiveBean();
-                        liveBean.setViewType(0);
-                        liveBean.setGroupBannerBeanList(list);
-                        liveBeans.add(0, liveBean);
-                    } else if (i == 2) {
-                        LiveBean liveBean = new LiveBean();
-                        liveBean.setViewType(0);
-                        liveBean.setGroupBannerBeanList(list);
-                        if (liveBeans.size() >= 16) {
-                            liveBeans.add(17, liveBean);
-                        }
-                    } else if (i == 3) {
-                        LiveBean liveBean = new LiveBean();
-                        liveBean.setViewType(0);
-                        liveBean.setGroupBannerBeanList(list);
-                        if (liveBeans.size() >= 33) {
-                            liveBeans.add(34, liveBean);
-                        }
-                    } else if (i == 4) {
-                        LiveBean liveBean = new LiveBean();
-                        liveBean.setViewType(0);
-                        liveBean.setGroupBannerBeanList(list);
-                        if (liveBeans.size() >= 50) {
-                            liveBeans.add(51, liveBean);
-                        }
-                    }
-                }
-
                 return liveBeans;
             }
 

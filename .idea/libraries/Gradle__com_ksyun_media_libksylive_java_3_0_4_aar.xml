@@ -3,8 +3,8 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2614b3ace163a5edfc4ef541ee21421a/libksylive-java-3.0.4/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2614b3ace163a5edfc4ef541ee21421a/libksylive-java-3.0.4/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2614b3ace163a5edfc4ef541ee21421a/libksylive-java-3.0.4/jars/libs/ksylive.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2614b3ace163a5edfc4ef541ee21421a/libksylive-java-3.0.4/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2614b3ace163a5edfc4ef541ee21421a/libksylive-java-3.0.4/jars/libs/ksylive.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

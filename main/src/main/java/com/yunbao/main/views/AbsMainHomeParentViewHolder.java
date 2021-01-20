@@ -1,12 +1,14 @@
 package com.yunbao.main.views;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yunbao.common.adapter.ViewPagerAdapter;
@@ -16,6 +18,7 @@ import com.yunbao.main.R;
 import com.yunbao.main.interfaces.AppBarStateListener;
 import com.yunbao.main.interfaces.MainAppBarExpandListener;
 import com.yunbao.main.interfaces.MainAppBarLayoutListener;
+import com.yunbao.main.interfaces.TopTitleListener;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -25,6 +28,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerInd
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.CommonPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView;
 
 import java.util.ArrayList;
@@ -47,6 +51,7 @@ public abstract class AbsMainHomeParentViewHolder extends AbsMainViewHolder {
     protected List<FrameLayout> mViewList;
     private int mAppLayoutOffestY;
     private CommonNavigatorAdapter commonNavigatorAdapter;
+    private TopTitleListener mTopTitleListener;
 
     public AbsMainHomeParentViewHolder(Context context, ViewGroup parentView) {
         super(context, parentView);
@@ -127,21 +132,64 @@ public abstract class AbsMainHomeParentViewHolder extends AbsMainViewHolder {
 
             @Override
             public IPagerTitleView getTitleView(Context context, final int index) {
-                SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
-                simplePagerTitleView.setNormalColor(ContextCompat.getColor(mContext, R.color.gray1));
-                simplePagerTitleView.setSelectedColor(ContextCompat.getColor(mContext, R.color.textColor));
-                simplePagerTitleView.setText(titles.get(index));
-                simplePagerTitleView.setTextSize(18);
-                simplePagerTitleView.getPaint().setFakeBoldText(true);
-                simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
+                CommonPagerTitleView commonPagerTitleView = new CommonPagerTitleView(context);
+                commonPagerTitleView.setContentView(R.layout.home_page_title_view);
+                final ImageView image = commonPagerTitleView.findViewById(R.id.image);
+                final TextView title = commonPagerTitleView.findViewById(R.id.title);
+
+                title.setText(titles.get(index));
+                if (titles.size() >= 3) {
+                    if (titles.get(0).equals("关注")) {
+                        if (index == 0) {
+                            image.setImageResource(R.mipmap.icon_home_top_follow);
+                        } else if (index == 1) {
+                            image.setImageResource(R.mipmap.icon_home_top_live);
+                        } else if (index == 2) {
+                            image.setImageResource(R.mipmap.icon_home_top_video);
+                        }
+                    }
+                }
+
+                commonPagerTitleView.setOnPagerTitleChangeListener(new CommonPagerTitleView.OnPagerTitleChangeListener() {
+
+                    @Override
+                    public void onSelected(int index, int totalCount) {
+                        title.setTextColor(ContextCompat.getColor(mContext, R.color.textColor));
+                        image.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onDeselected(int index, int totalCount) {
+                        title.setTextColor(ContextCompat.getColor(mContext, R.color.gray1));
+                        image.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onLeave(int index, int totalCount, float leavePercent, boolean leftToRight) {
+
+                    }
+
+                    @Override
+                    public void onEnter(int index, int totalCount, float enterPercent, boolean leftToRight) {
+
+                    }
+
+                });
+                commonPagerTitleView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mViewPager != null) {
-                            mViewPager.setCurrentItem(index);
+                        mTopTitleListener.onTopTitle(index);
+                        if (index > 2) {
+
+                        } else {
+                            if (mViewPager != null) {
+                                mViewPager.setCurrentItem(index);
+                            }
                         }
                     }
                 });
-                return simplePagerTitleView;
+
+                return commonPagerTitleView;
             }
 
             @Override
@@ -177,6 +225,10 @@ public abstract class AbsMainHomeParentViewHolder extends AbsMainViewHolder {
      */
     public void setAppBarExpandListener(MainAppBarExpandListener appBarExpandListener) {
         mAppBarExpandListener = appBarExpandListener;
+    }
+
+    public void setTopTitleListener(TopTitleListener topTitleListener) {
+        mTopTitleListener = topTitleListener;
     }
 
     @Override
