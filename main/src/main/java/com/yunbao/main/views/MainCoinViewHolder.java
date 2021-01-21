@@ -1,39 +1,29 @@
-package com.yunbao.main.activity;
+package com.yunbao.main.views;
 
 import android.app.Dialog;
-import android.content.Intent;
-import android.net.Uri;
+import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yunbao.common.CommonAppConfig;
-import com.yunbao.common.Constants;
 import com.yunbao.common.HtmlConfig;
-import com.yunbao.common.activity.AbsActivity;
 import com.yunbao.common.activity.WebViewActivity;
 import com.yunbao.common.bean.CoinBean;
 import com.yunbao.common.bean.CoinPayBean;
 import com.yunbao.common.custom.ItemDecoration;
 import com.yunbao.common.event.CoinChangeEvent;
-import com.yunbao.common.event.FollowEvent;
 import com.yunbao.common.http.CommonHttpConsts;
 import com.yunbao.common.http.CommonHttpUtil;
 import com.yunbao.common.http.HttpCallback;
 import com.yunbao.common.http.HttpClient;
 import com.yunbao.common.interfaces.OnItemClickListener;
-import com.yunbao.common.pay.PayCallback;
-import com.yunbao.common.pay.PayPresenter;
 import com.yunbao.common.utils.DialogUitl;
-import com.yunbao.common.utils.RouteUtil;
-import com.yunbao.common.utils.StringUtil;
-import com.yunbao.common.utils.ToastUtil;
 import com.yunbao.common.utils.WordUtil;
 import com.yunbao.main.R;
 import com.yunbao.main.adapter.CoinAdapter;
@@ -43,14 +33,14 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by cxf on 2018/10/23.
- * 充值
+ * Created by shortybin
+ * on 1/21/21
  */
-@Route(path = RouteUtil.PATH_COIN)
-public class MyCoinActivity extends AbsActivity implements OnItemClickListener<CoinBean>, View.OnClickListener {
+public class MainCoinViewHolder extends AbsMainViewHolder implements OnItemClickListener<CoinBean>, View.OnClickListener {
 
     private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
@@ -60,18 +50,19 @@ public class MyCoinActivity extends AbsActivity implements OnItemClickListener<C
     private TextView mBalance;
     private long mBalanceValue;
     private boolean mFirstLoad = true;
-    private PayPresenter mPayPresenter;
     private String mCoinName;
 
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_coin;
+    public MainCoinViewHolder(Context context, ViewGroup parentView) {
+        super(context, parentView);
     }
 
     @Override
-    protected void main() {
-        setTitle(WordUtil.getString(R.string.wallet));
+    protected int getLayoutId() {
+        return R.layout.main_coin_view_holder;
+    }
+
+    @Override
+    public void init() {
         mRefreshLayout = findViewById(R.id.refreshLayout);
         mRefreshLayout.setColorSchemeResources(com.yunbao.video.R.color.global);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -115,28 +106,11 @@ public class MyCoinActivity extends AbsActivity implements OnItemClickListener<C
         mPayRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false));
         mPayAdapter = new CoinPayAdapter(mContext);
         mPayRecyclerView.setAdapter(mPayAdapter);
-        mPayPresenter = new PayPresenter(this);
-        mPayPresenter.setServiceNameAli(Constants.PAY_BUY_COIN_ALI);
-        mPayPresenter.setServiceNameWx(Constants.PAY_BUY_COIN_WX);
-        mPayPresenter.setAliCallbackUrl(HtmlConfig.ALI_PAY_COIN_URL);
-        mPayPresenter.setPayCallback(new PayCallback() {
-            @Override
-            public void onSuccess() {
-                if (mPayPresenter != null) {
-                    mPayPresenter.checkPayResult();
-                }
-            }
-
-            @Override
-            public void onFailed() {
-
-            }
-        });
         EventBus.getDefault().register(this);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (mFirstLoad) {
             mFirstLoad = false;
@@ -144,7 +118,47 @@ public class MyCoinActivity extends AbsActivity implements OnItemClickListener<C
         }
     }
 
-    private void loadData() {
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.btn_tip) {
+            WebViewActivity.forward(mContext, HtmlConfig.CHARGE_PRIVCAY);
+        }
+    }
+
+    @Override
+    public void onItemClick(CoinBean bean, int position) {
+        final Dialog dialog = DialogUitl.loadingDialog(mContext);
+        dialog.show();
+        HttpClient.getInstance().get("Charge.advanceOrder&uid=37167&changeid=9&coin=9800&money=98.00", "pay")
+                .execute(new HttpCallback() {
+                    @Override
+                    public void onSuccess(int code, String msg, String[] info) {
+                        dialog.dismiss();
+                        if (code == 0 && info.length > 0) {
+                            String url = JSON.parseObject(info[0]).getString("payurl");
+                            WebViewActivity.forward(mContext, url, false);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        CommonHttpUtil.cancel(CommonHttpConsts.GET_BALANCE);
+        CommonHttpUtil.cancel(CommonHttpConsts.GET_ALI_ORDER);
+        CommonHttpUtil.cancel(CommonHttpConsts.GET_WX_ORDER);
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setOnRefreshListener(null);
+        }
+        mRefreshLayout = null;
+        super.onDestroy();
+    }
+
+    @Override
+    public void loadData() {
+        super.loadData();
         CommonHttpUtil.getBalance(new HttpCallback() {
             @Override
             public void onSuccess(int code, String msg, String[] info) {
@@ -161,11 +175,6 @@ public class MyCoinActivity extends AbsActivity implements OnItemClickListener<C
                     if (mAdapter != null) {
                         mAdapter.setList(list);
                     }
-                    mPayPresenter.setBalanceValue(mBalanceValue);
-                    mPayPresenter.setAliPartner(obj.getString("aliapp_partner"));
-                    mPayPresenter.setAliSellerId(obj.getString("aliapp_seller_id"));
-                    mPayPresenter.setAliPrivateKey(obj.getString("aliapp_key_android"));
-                    mPayPresenter.setWxAppID(obj.getString("wx_appid"));
                 }
             }
 
@@ -178,51 +187,6 @@ public class MyCoinActivity extends AbsActivity implements OnItemClickListener<C
         });
     }
 
-    @Override
-    public void onItemClick(CoinBean bean, int position) {
-        final Dialog dialog = DialogUitl.loadingDialog(this);
-        dialog.show();
-        HttpClient.getInstance().get("Charge.advanceOrder&uid=37167&changeid=9&coin=9800&money=98.00", "pay")
-                .execute(new HttpCallback() {
-                    @Override
-                    public void onSuccess(int code, String msg, String[] info) {
-                        dialog.dismiss();
-                        if (code == 0 && info.length > 0) {
-                            String url = JSON.parseObject(info[0]).getString("payurl");
-                            WebViewActivity.forward(mContext, url, false);
-                        }
-                    }
-                });
-//        if (mPayPresenter == null) {
-//            return;
-//        }
-//        if (mPayAdapter == null) {
-//            ToastUtil.show(R.string.wallet_tip_5);
-//            return;
-//        }
-//        CoinPayBean coinPayBean = mPayAdapter.getPayCoinPayBean();
-//        if (coinPayBean == null) {
-//            ToastUtil.show(R.string.wallet_tip_5);
-//            return;
-//        }
-//        String href = coinPayBean.getHref();
-//        if (TextUtils.isEmpty(href)) {
-//            String money = bean.getMoney();
-//            String goodsName = StringUtil.contact(bean.getCoin(), mCoinName);
-//            String orderParams = StringUtil.contact(
-//                    "&uid=", CommonAppConfig.getInstance().getUid(),
-//                    "&money=", money,
-//                    "&changeid=", bean.getId(),
-//                    "&coin=", bean.getCoin());
-//            mPayPresenter.pay(coinPayBean.getId(), money, goodsName, orderParams);
-//        } else {
-//            Intent intent = new Intent();
-//            intent.setAction(Intent.ACTION_VIEW);
-//            intent.setData(Uri.parse(href));
-//            mContext.startActivity(intent);
-//        }
-    }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCoinChangeEvent(CoinChangeEvent e) {
@@ -230,31 +194,4 @@ public class MyCoinActivity extends AbsActivity implements OnItemClickListener<C
             mBalance.setText(e.getCoin());
         }
     }
-
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.btn_tip) {
-            WebViewActivity.forward(mContext, HtmlConfig.CHARGE_PRIVCAY);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        CommonHttpUtil.cancel(CommonHttpConsts.GET_BALANCE);
-        CommonHttpUtil.cancel(CommonHttpConsts.GET_ALI_ORDER);
-        CommonHttpUtil.cancel(CommonHttpConsts.GET_WX_ORDER);
-        if (mRefreshLayout != null) {
-            mRefreshLayout.setOnRefreshListener(null);
-        }
-        mRefreshLayout = null;
-        if (mPayPresenter != null) {
-            mPayPresenter.release();
-        }
-        mPayPresenter = null;
-        super.onDestroy();
-    }
-
-
 }

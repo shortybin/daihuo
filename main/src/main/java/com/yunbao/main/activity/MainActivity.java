@@ -52,6 +52,7 @@ import com.yunbao.main.interfaces.MainStartChooseCallback;
 import com.yunbao.main.presenter.CheckLivePresenter;
 import com.yunbao.main.views.AbsMainViewHolder;
 import com.yunbao.main.views.BonusViewHolder;
+import com.yunbao.main.views.MainCoinViewHolder;
 import com.yunbao.main.views.MainHomeViewHolder;
 import com.yunbao.main.views.MainListViewHolder;
 import com.yunbao.main.views.MainMeViewHolder;
@@ -74,7 +75,8 @@ public class MainActivity extends AbsActivity implements MainAppBarLayoutListene
     private ViewPager mViewPager;
     private List<FrameLayout> mViewList;
     private MainHomeViewHolder mHomeViewHolder;
-    private MainNearViewHolder mNearViewHolder;
+    //private MainNearViewHolder mNearViewHolder;
+    private MainCoinViewHolder mMainCoinViewHolder;
     private MainListViewHolder mListViewHolder;
     private MainMeViewHolder mMeViewHolder;
     private AbsMainViewHolder[] mViewHolders;
@@ -235,10 +237,10 @@ public class MainActivity extends AbsActivity implements MainAppBarLayoutListene
                             if (code == 0 && info.length > 0) {
                                 try {
                                     JSONObject obj = JSON.parseObject(info[0]);
-                                    int haveStore=obj.getIntValue("isshop");
-                                    LiveAnchorActivity.forward(mContext, obj.getIntValue("live_sdk"), JSON.parseObject(obj.getString("android"), LiveKsyConfigBean.class),haveStore);
+                                    int haveStore = obj.getIntValue("isshop");
+                                    LiveAnchorActivity.forward(mContext, obj.getIntValue("live_sdk"), JSON.parseObject(obj.getString("android"), LiveKsyConfigBean.class), haveStore);
                                 } catch (Exception e) {
-                                    LiveAnchorActivity.forward(mContext, CommonAppConfig.LIVE_SDK_USED, LiveConfig.getDefaultKsyConfig(),0);
+                                    LiveAnchorActivity.forward(mContext, CommonAppConfig.LIVE_SDK_USED, LiveConfig.getDefaultKsyConfig(), 0);
                                 }
                             }
                         }
@@ -246,7 +248,7 @@ public class MainActivity extends AbsActivity implements MainAppBarLayoutListene
                 }
                 LiveHttpUtil.getLiveSdk(mGetLiveSdkCallback);
             } else {
-                LiveAnchorActivity.forward(mContext, CommonAppConfig.LIVE_SDK_USED, LiveConfig.getDefaultKsyConfig(),0);
+                LiveAnchorActivity.forward(mContext, CommonAppConfig.LIVE_SDK_USED, LiveConfig.getDefaultKsyConfig(), 0);
             }
         }
     };
@@ -437,9 +439,9 @@ public class MainActivity extends AbsActivity implements MainAppBarLayoutListene
             if (mHomeViewHolder != null) {
                 mHomeViewHolder.setUnReadCount(unReadCount);
             }
-            if (mNearViewHolder != null) {
-                mNearViewHolder.setUnReadCount(unReadCount);
-            }
+//            if (mNearViewHolder != null) {
+//                mNearViewHolder.setUnReadCount(unReadCount);
+//            }
         }
     }
 
@@ -471,9 +473,11 @@ public class MainActivity extends AbsActivity implements MainAppBarLayoutListene
                     mHomeViewHolder.setAppBarLayoutListener(this);
                     vh = mHomeViewHolder;
                 } else if (position == 1) {
-                    mNearViewHolder = new MainNearViewHolder(mContext, parent);
-                    mNearViewHolder.setAppBarLayoutListener(this);
-                    vh = mNearViewHolder;
+//                    mNearViewHolder = new MainNearViewHolder(mContext, parent);
+//                    mNearViewHolder.setAppBarLayoutListener(this);
+//                    vh = mNearViewHolder;
+                    mMainCoinViewHolder = new MainCoinViewHolder(mContext, parent);
+                    vh = mMainCoinViewHolder;
                 } else if (position == 2) {
                     mListViewHolder = new MainListViewHolder(mContext, parent);
                     vh = mListViewHolder;
