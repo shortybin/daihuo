@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: ./baidu/libs/bdasr_3.0.8.2.jar">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/baidu/libs/bdasr_3.0.8.2.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: ./common/libs/TencentMapSDK_1.2.8.1.jar">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/common/libs/TencentMapSDK_1.2.8.1.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
