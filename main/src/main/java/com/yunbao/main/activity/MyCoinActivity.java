@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.lzy.okgo.model.Response;
 import com.yunbao.common.CommonAppConfig;
 import com.yunbao.common.Constants;
 import com.yunbao.common.HtmlConfig;
@@ -27,6 +28,7 @@ import com.yunbao.common.http.CommonHttpConsts;
 import com.yunbao.common.http.CommonHttpUtil;
 import com.yunbao.common.http.HttpCallback;
 import com.yunbao.common.http.HttpClient;
+import com.yunbao.common.http.JsonBean;
 import com.yunbao.common.interfaces.OnItemClickListener;
 import com.yunbao.common.pay.PayCallback;
 import com.yunbao.common.pay.PayPresenter;
@@ -138,10 +140,11 @@ public class MyCoinActivity extends AbsActivity implements OnItemClickListener<C
     @Override
     protected void onResume() {
         super.onResume();
-        if (mFirstLoad) {
-            mFirstLoad = false;
-            loadData();
-        }
+//        if (mFirstLoad) {
+//            mFirstLoad = false;
+//            loadData();
+//        }
+        loadData();
     }
 
     private void loadData() {
@@ -182,7 +185,11 @@ public class MyCoinActivity extends AbsActivity implements OnItemClickListener<C
     public void onItemClick(CoinBean bean, int position) {
         final Dialog dialog = DialogUitl.loadingDialog(this);
         dialog.show();
-        HttpClient.getInstance().get("Charge.advanceOrder&uid=37167&changeid=9&coin=9800&money=98.00", "pay")
+        HttpClient.getInstance().get("Charge.advanceOrder", "pay")
+                .params("uid", CommonAppConfig.getInstance().getUid())
+                .params("changeid", bean.getId())
+                .params("coin", bean.getCoin())
+                .params("money", bean.getMoney())
                 .execute(new HttpCallback() {
                     @Override
                     public void onSuccess(int code, String msg, String[] info) {
@@ -191,6 +198,13 @@ public class MyCoinActivity extends AbsActivity implements OnItemClickListener<C
                             String url = JSON.parseObject(info[0]).getString("payurl");
                             WebViewActivity.forward(mContext, url, false);
                         }
+
+                    }
+
+                    @Override
+                    public void onError(Response<JsonBean> response) {
+                        super.onError(response);
+                        dialog.dismiss();
                     }
                 });
 //        if (mPayPresenter == null) {

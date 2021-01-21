@@ -179,13 +179,6 @@ public abstract class AbsMainHomeParentViewHolder extends AbsMainViewHolder {
                     @Override
                     public void onClick(View v) {
                         mTopTitleListener.onTopTitle(index);
-                        if (index > 2) {
-
-                        } else {
-                            if (mViewPager != null) {
-                                mViewPager.setCurrentItem(index);
-                            }
-                        }
                     }
                 });
 

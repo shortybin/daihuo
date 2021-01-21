@@ -125,13 +125,16 @@ public class TabButton extends LinearLayout {
                 if (mText != null) {
                     mText.setTextColor(mTextColorChecked);
                 }
-                if (mAnimator != null) {
-                    mAnimator.start();
+//                if (mAnimator != null) {
+//                    mAnimator.start();
+//                }
+                if (mImg != null) {
+                    mImg.setImageDrawable(mDrawables[1]);
                 }
             } else {
-                if (mAnimator != null) {
-                    mAnimator.cancel();
-                }
+//                if (mAnimator != null) {
+//                    mAnimator.cancel();
+//                }
                 if (mImg != null) {
                     mImg.setImageDrawable(mDrawables[0]);
                 }
