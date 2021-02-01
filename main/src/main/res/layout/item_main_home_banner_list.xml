@@ -8,8 +8,11 @@
     <com.youth.banner.Banner
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="235dp"
         app:delay_time="3000"
+        android:layout_marginLeft="2.5dp"
+        android:layout_marginRight="2.5dp"
+        android:layout_marginTop="5dp"
         app:image_scale_type="fit_xy"
         app:indicator_drawable_selected="@drawable/bg_home_indicator_selected"
         app:indicator_drawable_unselected="@drawable/bg_home_indicator_unselected"

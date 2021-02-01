@@ -44,7 +44,7 @@ public class MainHomeLiveAdapter extends RefreshAdapter<LiveBean> {
     public MainHomeLiveAdapter(Context context) {
         super(context);
         mHeadView = mInflater.inflate(R.layout.item_main_home_live_head, null, false);
-        mHeadView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DpUtil.dp2px(184)));
+        //mHeadView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DpUtil.dp2px(184)));
         mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
